@@ -1,4 +1,5 @@
 import java.awt.Dimension;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -236,8 +237,10 @@ public class BrowserView {
     }
 
     // makes a button using either an image or a label
-    private Button makeButton (String property, EventHandler<ActionEvent> handler) {
+    private Button makeButton (String property, String methodName) {
         // represent all supported image suffixes
+    	Class noparams[] = {};
+    	Method method = this.getDeclaredMethod(methodName, noparams);
         final String IMAGEFILE_SUFFIXES = 
             String.format(".*\\.(%s)", String.join("|", ImageIO.getReaderFileSuffixes()));
 
@@ -249,7 +252,7 @@ public class BrowserView {
         } else {
             result.setText(label);
         }
-        result.setOnAction(handler);
+        result.setOnAction((EventHandler<ActionEvent>) method.invoke(this));
         return result;
     }
 
